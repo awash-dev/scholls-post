@@ -77,17 +77,15 @@ const useRovingIndex = (options?: RovingIndexOptions) => {
   };
 };
 
-interface MenuProps {
+interface AboutMenuProps {
   focusNext: () => void;
   focusPrevious: () => void;
   onMouseEnter?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
-  label: string;
-  items: { icon: React.ReactNode; label: string }[];
 }
 
-const Menu = React.forwardRef<HTMLButtonElement, MenuProps>(
-  ({ focusNext, focusPrevious, label, items, ...props }, ref) => {
+const AboutMenu = React.forwardRef<HTMLButtonElement, AboutMenuProps>(
+  ({ focusNext, focusPrevious, ...props }, ref) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const { targets, setActiveIndex, getTargetProps } = useRovingIndex({
       initialActiveIndex: 0,
@@ -113,17 +111,100 @@ const Menu = React.forwardRef<HTMLButtonElement, MenuProps>(
       },
     });
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (event.key.match(/(ArrowLeft|ArrowRight|Tab)/)) {
-        setIsOpen(false);
-      }
-      if (event.key === "ArrowDown") {
-        event.preventDefault();
-        targets[0]?.focus();
-        setActiveIndex(0);
-      }
-      props.onKeyDown?.(event);
-    };
+    return (
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            aria-haspopup
+            aria-expanded={isOpen ? "true" : "false"}
+            ref={ref}
+            {...props}
+            role="menuitem"
+            className="bg-white hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+            onKeyDown={(event) => {
+              props.onKeyDown?.(event);
+              if (event.key.match(/(ArrowLeft|ArrowRight|Tab)/)) {
+                setIsOpen(false);
+              }
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                targets[0]?.focus();
+                setActiveIndex(0);
+              }
+            }}
+            onFocus={(event) => setIsOpen(true)}
+            onMouseEnter={(event) => {
+              props.onMouseEnter?.(event);
+              setIsOpen(true);
+            }}
+          >
+            Student <ChevronDown className="ml-2 h-4 w-4" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-48 p-2 bg-white shadow-lg">
+          <List>
+            <ListItem>
+              <Button
+                role="menuitem"
+                {...getTargetProps(0)}
+                className="w-full justify-start bg-white hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                <User className="mr-2 h-4 w-4" />
+                Add a student
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                role="menuitem"
+                {...getTargetProps(1)}
+                className="w-full justify-start bg-white hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                <ClipboardList className="mr-2 h-4 w-4" />
+                Attendance
+              </Button>
+            </ListItem>
+          </List>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+);
+
+interface AdmissionsMenuProps {
+  focusNext: () => void;
+  focusPrevious: () => void;
+  onMouseEnter?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
+}
+
+const AdmissionsMenu = React.forwardRef<HTMLButtonElement, AdmissionsMenuProps>(
+  ({ focusNext, focusPrevious, ...props }, ref) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const { targets, setActiveIndex, getTargetProps } = useRovingIndex({
+      initialActiveIndex: 0,
+      vertical: true,
+      handlers: {
+        onKeyDown: (event, fns) => {
+          if (event.key.match(/(ArrowDown|ArrowUp|ArrowLeft|ArrowRight)/)) {
+            event.preventDefault();
+          }
+          if (event.key === "Tab") {
+            setIsOpen(false);
+            setActiveIndex(0);
+          }
+          if (event.key === "ArrowLeft") {
+            setIsOpen(false);
+            focusPrevious();
+          }
+          if (event.key === "ArrowRight") {
+            setIsOpen(false);
+            focusNext();
+          }
+        },
+      },
+    });
 
     return (
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -134,30 +215,51 @@ const Menu = React.forwardRef<HTMLButtonElement, MenuProps>(
             ref={ref}
             {...props}
             role="menuitem"
-            onKeyDown={handleKeyDown}
+            className="bg-white hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+            onKeyDown={(event) => {
+              props.onKeyDown?.(event);
+              if (event.key.match(/(ArrowLeft|ArrowRight|Tab)/)) {
+                setIsOpen(false);
+              }
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                targets[0]?.focus();
+                setActiveIndex(0);
+              }
+            }}
             onFocus={(event) => setIsOpen(true)}
             onMouseEnter={(event) => {
               props.onMouseEnter?.(event);
               setIsOpen(true);
             }}
           >
-            {label} <ChevronDown className="ml-2 h-4 w-4" />
+            Teacher <ChevronDown className="ml-2 h-4 w-4" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-48 p-2">
+        <PopoverContent className="w-48 p-2 bg-white shadow-lg">
           <List>
-            {items.map((item, index) => (
-              <ListItem key={index}>
-                <Button
-                  role="menuitem"
-                  {...getTargetProps(index)}
-                  className="w-full justify-start"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.icon} {item.label}
-                </Button>
-              </ListItem>
-            ))}
+            <ListItem>
+              <Button
+                role="menuitem"
+                {...getTargetProps(0)}
+                className="w-full justify-start bg-white hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                <User className="mr-2 h-4 w-4" />
+                Add a teacher
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Button
+                role="menuitem"
+                {...getTargetProps(1)}
+                className="w-full justify-start bg-white hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                <ClipboardList className="mr-2 h-4 w-4" />
+                Attendance
+              </Button>
+            </ListItem>
           </List>
         </PopoverContent>
       </Popover>
@@ -169,35 +271,19 @@ export default function ExampleNavigationMenu() {
   const { getTargetProps, focusNext, focusPrevious } = useRovingIndex();
 
   return (
-    <div className="flex justify-center w-full h-[80px]">
+    <div className="flex justify-center w-full h-[80px] bg-white shadow-sm">
       <List className="flex gap-4">
         <ListItem>
-          <Menu
-            focusNext={focusNext}
-            focusPrevious={focusPrevious}
-            label="Student"
-            items={[
-              { icon: <User className="mr-2 h-4 w-4" />, label: "Add a student" },
-              { icon: <ClipboardList className="mr-2 h-4 w-4" />, label: "Attendance" },
-            ]}
-          />
+          <AboutMenu focusNext={focusNext} focusPrevious={focusPrevious} />
         </ListItem>
         <ListItem>
-          <Menu
-            focusNext={focusNext}
-            focusPrevious={focusPrevious}
-            label="Teacher"
-            items={[
-              { icon: <User className="mr-2 h-4 w-4" />, label: "Add a teacher" },
-              { icon: <ClipboardList className="mr-2 h-4 w-4" />, label: "Attendance" },
-            ]}
-          />
+          <AdmissionsMenu focusNext={focusNext} focusPrevious={focusPrevious} />
         </ListItem>
         <ListItem>
           <Button
             role="menuitem"
             {...getTargetProps(2)}
-            className="flex items-center"
+            className="flex items-center bg-white hover:bg-gray-100 hover:shadow-md transition-all duration-200"
           >
             <UserRound className="mr-2 h-4 w-4" />
             Profile
