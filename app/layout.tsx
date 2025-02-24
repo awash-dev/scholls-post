@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SignedOut>
             <div className="flex flex-col items-center justify-center h-screen">
               <div className="text-center">
-                <SignIn routing="hash" afterSignInUrl="/pages/" />
+                <SignIn routing="hash" afterSignInUrl="/page/" />
               </div>
             </div>
           </SignedOut>
