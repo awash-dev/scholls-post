@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { ChevronDown, User, ClipboardList, UserRound } from "lucide-react";
 
 const NavigationMenu = () => {
@@ -50,20 +51,22 @@ const NavigationMenu = () => {
           </button>
           {isStudentMenuOpen && (
             <div className="absolute mt-2 w-48 bg-white shadow-lg rounded-md p-2">
-              <button
+              <Link
+                href="/page/attend/student"
                 className="w-full flex items-center px-4 py-2 hover:bg-gray-100 rounded-md transition-all duration-200"
                 onClick={() => setIsStudentMenuOpen(false)}
               >
                 <User className="mr-2 h-4 w-4" />
                 Add a student
-              </button>
-              <button
+              </Link>
+              <Link
+                href="/page/create/students"
                 className="w-full flex items-center px-4 py-2 hover:bg-gray-100 rounded-md transition-all duration-200"
                 onClick={() => setIsStudentMenuOpen(false)}
               >
                 <ClipboardList className="mr-2 h-4 w-4" />
                 Attendance
-              </button>
+              </Link>
             </div>
           )}
         </div>
@@ -85,32 +88,34 @@ const NavigationMenu = () => {
           </button>
           {isTeacherMenuOpen && (
             <div className="absolute mt-2 w-48 bg-white shadow-lg rounded-md p-2">
-              <button
+              <Link
+                href="/page/create/teacher"
                 className="w-full flex items-center px-4 py-2 hover:bg-gray-100 rounded-md transition-all duration-200"
                 onClick={() => setIsTeacherMenuOpen(false)}
               >
                 <User className="mr-2 h-4 w-4" />
                 Add a teacher
-              </button>
-              <button
+              </Link>
+              <Link
+                href="/page/attend/teacher"
                 className="w-full flex items-center px-4 py-2 hover:bg-gray-100 rounded-md transition-all duration-200"
                 onClick={() => setIsTeacherMenuOpen(false)}
               >
                 <ClipboardList className="mr-2 h-4 w-4" />
                 Attendance
-              </button>
+              </Link>
             </div>
           )}
         </div>
 
-        {/* Profile Button */}
-        <button
+        {/* Profile Link */}
+        <Link
+          href="/page/profile"
           className="flex items-center px-4 py-2 bg-white hover:bg-gray-100 hover:shadow-md rounded-md transition-all duration-200"
-          onClick={() => alert("Profile clicked")}
         >
           <UserRound className="mr-2 h-4 w-4" />
           Profile
-        </button>
+        </Link>
       </div>
     </div>
   );
